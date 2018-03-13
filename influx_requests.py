@@ -1,13 +1,31 @@
 import requests
 import json
 import calendar, datetime, time
+import configparser
 from datetime import datetime
-
+config = configparser.ConfigParser()
+config.read('server.ini')
+user = config['influx_server']['User']
+pwd = config['influx_server']['Password']
+url = config['influx_server']['URL']
+db_name = config['influx_server']['DB_Name']
+port_num = config['DEFAULT']['Port_Number']
+ssl_flag = config['DEFAULT']['SSL_Flag']
 
 #Timestamp is a datetime object in UTC time
 def UTC_time_to_epoch(timestamp):
   epoch = calendar.timegm(timestamp.utctimetuple())
   return epoch
+
+config = configparser.ConfigParser()
+config.read('server.ini')
+user = config['influx_server']['User']
+pwd = config['influx_server']['Password']
+url_with_credentials = config['influx_server']['URL_With_Credentials']
+db_name = config['influx_server']['DB_Name']
+port_num = config['DEFAULT']['Port_Number']
+ssl_flag = config['DEFAULT']['SSL_Flag']
+
 url = url_with_credentials
 json_body = [
         {
