@@ -17,11 +17,8 @@ import requests
 import libs.xbeelt #this import must be after requests or else an error occurs
 import configparser
 
-def cToF(reading):
-    return reading * 1.8 + 32.0
-
 class ServerData:
-    def __init__(self,url_input,db_input,username_input,password_input,port_input,headers_input,method_input):
+    def __init__(self,url_input,db_input,username_input,password_input,port_input,headers_input,method_input,params_input):
         self.url = url_input
         self.db = db_input
         self.username = username_input
@@ -29,6 +26,28 @@ class ServerData:
         self.port = port_input
         self.headers = headers_input
         self.method = method_input
+        self.params = params_input
+
+def influxDB_write(ServerDataInput,sensor_num,temp,time_stamp):
+    #payload = "Test_2_28,"
+    #need to add space between timestamp and value though somehow it is still being picked up
+    #make string to send to server
+    payload = "Test_2_28,"+ "Fake_Meter_type=Meter_" + str(sensor_num) + " random_Float_value=" + str(temp)+str(int(time_stamp))
+    response = test_session.request(
+                    method=ServerDataInput.method,
+                    url=ServerDataInput.url,
+                    auth=(ServerDataInput.username, ServerDataInput.password),
+                    params=ServerDataInput.params,
+                    data=payload,
+                    headers=ServerDataInput.headers,
+                    verify=True
+                    )
+    return response.status_code
+
+
+def cToF(reading):
+    return reading * 1.8 + 32.0
+
 
 #Read in .ini file and get all configuration settings
 config = configparser.ConfigParser()
@@ -53,7 +72,7 @@ method = 'POST'
 username=user
 password=pwd
 
-influx_server = ServerData(url,db_name,user,pwd,port_num,headers,method)
+influx_server = ServerData(url,db_name,user,pwd,port_num,headers,method,params)
 
 sensor_address = [None]*2
 sensor_address[0] = "[00:13:A2:00:40:ac:05:ca]!"
@@ -97,7 +116,6 @@ with open(log_file_path, 'ab') as outfile:
         print("Getting readings for timestamp %s ..." % (timestampUTCstring))
         dataRow = [timestampUTCstring]
         for j in range(numSensors):
-            payload = "Test_2_28,"
             # Get readings from all sensors at some point in time
             temperature = 0.0
             if (sensor[j] is None):
@@ -110,21 +128,7 @@ with open(log_file_path, 'ab') as outfile:
                 temp_array[j] = temperature
                 print(temperature)
                 dataRow.append(temperature)
-                #need to add space between timestamp and value though somehow it is still being picked up
-                #make string to send to server
-                payload = payload + "Fake_Meter_type=Meter_" + str(j) + " random_Float_value=" + str(temperature)+str(int(time.time()))
-                response = test_session.request(
-                    method=method,
-                    url=url,
-                    auth=(username, password),
-                    params=params,
-                    data=payload,
-                    headers=headers,
-                    verify=True
-                    )
-                print(payload)
-                print(response.text)
-                print(response.status_code)
+            print influxDB_write(influx_server,j,temperature,time.time())
 
 
         writer.writerow(dataRow)
