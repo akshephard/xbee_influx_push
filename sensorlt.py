@@ -2,6 +2,7 @@
 #TODO poll for xbee sensors
 #TODO put things into functions
 
+CONFIG_FILE = 'server.ini'
 
 import time
 import csv
@@ -16,8 +17,22 @@ import requests
 import libs.xbeelt #this import must be after requests or else an error occurs
 import configparser
 
+def cToF(reading):
+    return reading * 1.8 + 32.0
+
+class ServerData:
+    def __init__(self,url_input,db_input,username_input,password_input,port_input,headers_input,method_input):
+        self.url = url_input
+        self.db = db_input
+        self.username = username_input
+        self.password = password_input
+        self.port = port_input
+        self.headers = headers_input
+        self.method = method_input
+
+#Read in .ini file and get all configuration settings
 config = configparser.ConfigParser()
-config.read('server.ini')
+config.read(CONFIG_FILE)
 user = config['influx_server']['User']
 pwd = config['influx_server']['Password']
 url = config['influx_server']['URL_With_Credentials']
@@ -26,7 +41,7 @@ port_num = config['DEFAULT']['Port_Number']
 ssl_flag = config['DEFAULT']['SSL_Flag']
 ssl_flag = config['DEFAULT']['SSL_Flag']
 log_file_path=config['DEFAULT']['Log_File_Path']
-#url = url_with_credentials
+
 params = {
     'db': db_name
 }
@@ -38,6 +53,8 @@ method = 'POST'
 username=user
 password=pwd
 
+influx_server = ServerData(url,db_name,user,pwd,port_num,headers,method)
+
 sensor_address = [None]*2
 sensor_address[0] = "[00:13:A2:00:40:ac:05:ca]!"
 sensor_address[1] = "[00:13:A2:00:40:a7:1b:15]!"
@@ -45,8 +62,6 @@ numSensors = len(sensor_address)
 sensor = [None]*numSensors
 temp_array = [None]*2
 
-def cToF(reading):
-    return reading * 1.8 + 32.0
 
 
 
