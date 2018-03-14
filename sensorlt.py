@@ -98,15 +98,6 @@ numSensors = len(sensor_address)
 sensor = [None]*numSensors
 temp_array = [None]*numSensors
 print len(sensor_address)
-
-a=0
-while a < numSensors:
-    try:
-        sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
-    except ValueError as noSensorError:
-        sensor[a] = None
-    a += 1
-
 sample = [None]*numSensors
 
 
@@ -126,15 +117,17 @@ with open(log_file_path, 'ab') as outfile:
     # create session and loop forever collecting data
     test_session = requests.Session()
     while(True):
-        if (interval_count == SENSOR_INTERVAL_CHECK):
-            sensor_address = get_sensors()
-            interval_count = 0
-            numSensors = len(sensor_address)
-            temp_array = [None] * numSensors
-            sample = [None]*numSensors
+        sensor_address = get_sensors()
+        interval_count = 0
+        numSensors = len(sensor_address)
+        temp_array = [None] * numSensors
+        sample = [None]*numSensors
+        sensor = [None]*numSensors
         #Check all the sensors to see if they are still attached
         a=0
         while a < numSensors:
+            sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
+            print sensor[a]
             try:
                 sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
             except ValueError as noSensorError:
