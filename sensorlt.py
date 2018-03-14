@@ -1,8 +1,12 @@
-#Initial version of script to stor and push xbee sensor information to influxDB
-#TODO poll for xbee sensors
-#TODO put things into functions
+# This script finds LT sensors associated to the gateway and retrieves data from them
+# The data is wrriten to the CSV file specied in the ini file specified by CONFIG_FILE
+# The data is also sent to an influxDB server specified in the CONFIG_FILE
+
 
 CONFIG_FILE = 'server.ini'
+SENSOR_INTERVAL_CHECK = 4
+# Time interval between readings in seconds
+INTERVAL = 1 * 30
 
 import time
 import csv
@@ -15,6 +19,7 @@ sys.path.append("/userfs/WEB/python/configparser-3.5.0/src")
 
 import requests
 import libs.xbeelt #this import must be after requests or else an error occurs
+import xbee
 import configparser
 
 class ServerData:
@@ -44,7 +49,19 @@ def influxDB_write(ServerDataInput,sensor_num,temp,time_stamp):
                     )
     return response.status_code
 
-
+def get_sensors():
+    # Obtain a list with the discovered XBee nodes
+    print "Looking for XBee nodes...\r\n"
+    node_list = xbee.getnodelist()
+    sensor_count = 0
+    sensor_address = []
+    if node_list:
+        for node in node_list:
+            if (node.type == 'end'):
+                sensor_address.append(node.addr_extended)
+            #sensor_address[sensor_count] = node.addr_extended
+            #sensor_count += 1
+    return sensor_address
 def cToF(reading):
     return reading * 1.8 + 32.0
 
@@ -72,20 +89,17 @@ method = 'POST'
 username=user
 password=pwd
 
+#Make request data object
 influx_server = ServerData(url,db_name,user,pwd,port_num,headers,method,params)
 
-sensor_address = [None]*2
-sensor_address[0] = "[00:13:A2:00:40:ac:05:ca]!"
-sensor_address[1] = "[00:13:A2:00:40:a7:1b:15]!"
+
+sensor_address = get_sensors()
 numSensors = len(sensor_address)
 sensor = [None]*numSensors
-temp_array = [None]*2
+temp_array = [None]*numSensors
+print len(sensor_address)
 
-
-
-
-a=0;
-test_session = requests.Session()
+a=0
 while a < numSensors:
     try:
         sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
@@ -94,8 +108,9 @@ while a < numSensors:
     a += 1
 
 sample = [None]*numSensors
-# Time interval between readings in seconds
-INTERVAL = 1 * 30
+
+
+
 #Open file and start getting sensor values
 with open(log_file_path, 'ab') as outfile:
     writer = csv.writer(outfile)
@@ -107,11 +122,26 @@ with open(log_file_path, 'ab') as outfile:
         header.append(sensorString)
     writer.writerow(header)
 
-    # loop forever
+    interval_count = 0
+    # create session and loop forever collecting data
+    test_session = requests.Session()
     while(True):
-        #make a function to do the actual write to influxDB
-        #make a function that looks for new sensors
-        #add count and poll for sensor addresses every n number of iterations
+        if (interval_count == SENSOR_INTERVAL_CHECK):
+            sensor_address = get_sensors()
+            interval_count = 0
+            numSensors = len(sensor_address)
+            temp_array = [None] * numSensors
+            sample = [None]*numSensors
+        #Check all the sensors to see if they are still attached
+        a=0
+        while a < numSensors:
+            try:
+                sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
+            except ValueError as noSensorError:
+                sensor[a] = None
+                interval_count = SENSOR_INTERVAL_CHECK
+            a += 1
+
         timestampUTCstring = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         print("Getting readings for timestamp %s ..." % (timestampUTCstring))
         dataRow = [timestampUTCstring]
@@ -135,3 +165,4 @@ with open(log_file_path, 'ab') as outfile:
         print("DONE")
         outfile.flush();
         time.sleep(INTERVAL)
+        interval_count +=1
