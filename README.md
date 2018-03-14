@@ -14,6 +14,11 @@ influxdb-python/ - is a modified version of the library that prints out the cont
 
 configparser-3.5.0/ - this library is used for parsing the server.ini file 
 
+**python files**
+influxdb_test.py - This python script along with the modified version of influxdb-python was used to get the http request information that is sent during a write to the influxdb.
 
+influx_requests.py - This python script was used to prove that a successful http request could be made with requests using the information obtained from the modified influxdb-python library.
+
+ltsensor.py - This is the python script that retrieves the temperature data from the xbee sensors attached to the gateway and sends the values to the influxdb server specified. It also writes this data to a csv file specified in the configuration file.
 
 ##
