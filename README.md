@@ -1,4 +1,4 @@
-**xbee_influx_push script
+**xbee_influx_push script**
 
 This repository contains all of the files used in the development of the xbee_influx_push script. In order to use this script on the Digi Gateway, you must copy the files ltsensor.py as well as the two directories requests and config parser. 
 
