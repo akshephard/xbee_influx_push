@@ -1,19 +1,34 @@
 #Initial version of script to stor and push xbee sensor information to influxDB
-#TODO parse configuration file for user credentials
 #TODO poll for xbee sensors
 #TODO put things into functions
+
+
+import time
+import csv
+from datetime import datetime
 import sys, os
+#TODO put all of this inside of some sort of zip file
 sys.path.insert(0, os.path.join(os.path.abspath('.'), '_xbee_lt_sensor.zip'))
 sys.path.append("/userfs/WEB/python/requests-1.2.3")
+sys.path.append("/userfs/WEB/python/configparser-3.5.0/src")
+
 import requests
-import libs.xbeelt
-import time
-from datetime import datetime
-import csv
-logFilePath='/userfs/WEB/python/logs/sensor_log_test.csv'
-url = url_with_credentials
+import libs.xbeelt #this import must be after requests or else an error occurs
+import configparser
+
+config = configparser.ConfigParser()
+config.read('server.ini')
+user = config['influx_server']['User']
+pwd = config['influx_server']['Password']
+url = config['influx_server']['URL_With_Credentials']
+db_name = config['influx_server']['DB_Name']
+port_num = config['DEFAULT']['Port_Number']
+ssl_flag = config['DEFAULT']['SSL_Flag']
+ssl_flag = config['DEFAULT']['SSL_Flag']
+log_file_path=config['DEFAULT']['Log_File_Path']
+#url = url_with_credentials
 params = {
-    'db': 'pyTestDB'
+    'db': db_name
 }
 headers = {
     'Content-Type': 'application/octet-stream',
@@ -48,7 +63,7 @@ sample = [None]*numSensors
 # Time interval between readings in seconds
 INTERVAL = 1 * 30
 #Open file and start getting sensor values
-with open(logFilePath, 'ab') as outfile:
+with open(log_file_path, 'ab') as outfile:
     writer = csv.writer(outfile)
 
     header = ['TimeUTC']
@@ -60,6 +75,9 @@ with open(logFilePath, 'ab') as outfile:
 
     # loop forever
     while(True):
+        #make a function to do the actual write to influxDB
+        #make a function that looks for new sensors
+        #add count and poll for sensor addresses every n number of iterations
         timestampUTCstring = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         print("Getting readings for timestamp %s ..." % (timestampUTCstring))
         dataRow = [timestampUTCstring]
