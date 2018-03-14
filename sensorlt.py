@@ -2,7 +2,7 @@
 # The data is wrriten to the CSV file specied in the ini file specified by CONFIG_FILE
 # The data is also sent to an influxDB server specified in the CONFIG_FILE
 
-
+#name of config file
 CONFIG_FILE = 'server.ini'
 SENSOR_INTERVAL_CHECK = 4
 # Time interval between readings in seconds
@@ -34,7 +34,6 @@ class ServerData:
         self.params = params_input
 
 def influxDB_write(ServerDataInput,sensor_num,temp,time_stamp):
-    #payload = "Test_2_28,"
     #need to add space between timestamp and value though somehow it is still being picked up
     #make string to send to server
     payload = "Test_2_28,"+ "Fake_Meter_type=Meter_" + str(sensor_num) + " random_Float_value=" + str(temp)+str(int(time_stamp))
@@ -59,8 +58,6 @@ def get_sensors():
         for node in node_list:
             if (node.type == 'end'):
                 sensor_address.append(node.addr_extended)
-            #sensor_address[sensor_count] = node.addr_extended
-            #sensor_count += 1
     return sensor_address
 def cToF(reading):
     return reading * 1.8 + 32.0
@@ -117,14 +114,15 @@ with open(log_file_path, 'ab') as outfile:
     # create session and loop forever collecting data
     test_session = requests.Session()
     while(True):
+        #Check all the sensors to see if they are still attached
         sensor_address = get_sensors()
         interval_count = 0
         numSensors = len(sensor_address)
         temp_array = [None] * numSensors
         sample = [None]*numSensors
         sensor = [None]*numSensors
-        #Check all the sensors to see if they are still attached
         a=0
+
         while a < numSensors:
             sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
             print sensor[a]
