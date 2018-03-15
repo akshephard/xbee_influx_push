@@ -13,7 +13,6 @@ This repository contains all of the files used in the development of the xbee_in
  GATEWAY $ unzip xbee_influx_push.zip
  
  GATEWAY $ cd xbee_influx_push.zip
- 
  ```
  Either modify the example to contain your credentials and rename it to server.ini or copy server.ini over with scp
  
@@ -23,11 +22,9 @@ This repository contains all of the files used in the development of the xbee_in
  GATEWAY $ vi server-example.ini
  
  GATEWAY $ cp server-example.ini server.ini
- 
  ```
  To run the script use:
  ```
- 
  GATEWAY $ python sensorlt.py
  ```
 
