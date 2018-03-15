@@ -26,8 +26,10 @@ This repository contains all of the files used in the development of the xbee_in
  
  ```
  To run the script use:
+ '''
  
  GATEWAY $ python sensorlt.py
+ '''
 
 **Libraries**
 
