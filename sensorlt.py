@@ -11,9 +11,10 @@ import csv
 from datetime import datetime
 import sys, os
 #TODO put all of this inside of some sort of zip file
-sys.path.insert(0, os.path.join(os.path.abspath('.'), '_xbee_lt_sensor.zip'))
-sys.path.append("/userfs/WEB/python/requests-1.2.3")
-sys.path.append("/userfs/WEB/python/configparser-3.5.0/src")
+#sys.path.insert(0, os.path.join(os.path.abspath('.'), '_xbee_lt_sensor.zip'))
+sys.path.append("./libs")
+sys.path.append("./requests-1.2.3")
+sys.path.append("./configparser-3.5.0/src")
 
 import requests
 import libs.xbeelt #this import must be after requests or else an error occurs
