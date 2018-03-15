@@ -7,20 +7,24 @@ This repository contains all of the files used in the development of the xbee_in
 
  Copy the zip file from the repo to your gateway. Change IP address to the actual 
  IP addresss of your gateway
+ ```
  LOCAL_MACHINE $ scp xbee_influx_push.zip python@10.0.0.191:/userfs/WEB/python
  
  GATEWAY $ unzip xbee_influx_push.zip
  
  GATEWAY $ cd xbee_influx_push.zip
  
+ ```
  Either modify the example to contain your credentials and rename it to server.ini or copy server.ini over with scp
  
+ ```
  LOCAL_MACHINE $ scp server.ini python@192.0.0.103:/userfs/WEB/python/xbee_influx_push
  
  GATEWAY $ vi server-example.ini
  
  GATEWAY $ cp server-example.ini server.ini
  
+ ```
  To run the script use:
  
  GATEWAY $ python sensorlt.py
