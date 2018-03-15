@@ -4,8 +4,6 @@
 
 #name of config file
 CONFIG_FILE = 'server.ini'
-SENSOR_INTERVAL_CHECK = 4
-# Time interval between readings in seconds
 INTERVAL = 1 * 30
 
 import time
@@ -122,7 +120,8 @@ with open(log_file_path, 'ab') as outfile:
         sample = [None]*numSensors
         sensor = [None]*numSensors
         a=0
-
+        #Could be an issue here if a sensor is disconnected between these steps
+        #Try and except doesn't seem to be performing correct behaviour
         while a < numSensors:
             sensor[a] = libs.xbeelt.XBeeLTN(sensor_address[a])
             print sensor[a]
