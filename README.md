@@ -10,11 +10,13 @@ To run the script use: python sensorlt.py
 
 **The folders contained in this repository are necessary libraries for ltsensor.py as well as a library used for developmenmt**
 
-influxdb-python/ - is a modified version of the library that prints out the contents of the http request made by influxDBclient. This is useful for determining how to reimplement the influx API with requests library.
+influxdb-python/ - This is a modified version of the library that prints out the contents of the http request made by influxDBclient. This is useful for determining how to reimplement the influx API with requests library.
 
-configparser-3.5.0/ - this library is used for parsing the server.ini file
+configparser-3.5.0/ - This library is used for parsing the server.ini file
 
-**python files**
+requests-1.2.3/ - This is the version of requests that must be used to maintain compatibility with the xbee library
+
+**Python files**
 
 influxdb_test.py - This python script along with the modified version of influxdb-python was used to get the http request information that is sent during a write to the influxdb.
 
