@@ -1,10 +1,7 @@
 **xbee_influx_push script**
 
-This repository contains all of the files used in the development of the xbee_influx_push script. In order to use this script on the Digi Gateway, you must copy the files ltsensor.py as well as the two directories requests and config parser.
+This repository contains all of the files used in the development of the xbee_influx_push script as well as a zip file that will run on a DIGI Gateway. In order to use this script on the Digi Gateway, follow the instructions below. 
 
-Replace IP address with address of gateway as well.
-scp sensorlt.py python@192.0.0.103:/userfs/WEB/python
-scp -r configparser-3.5.0 python@10.0.0.191:/userfs/WEB/python
 
 **Installing script and libraries on fresh DIGI Gateway**
 
