@@ -7,6 +7,7 @@ scp sensorlt.py python@192.0.0.103:/userfs/WEB/python
 scp -r configparser-3.5.0 python@10.0.0.191:/userfs/WEB/python
 
 **Installing script and libraries on fresh DIGI Gateway**
+
  Copy the zip file from the repo to your gateway. Change IP address to the actual IP addresss of your gateway
  "LOCAL_MACHINE $ scp xbee_influx_push.zip python@10.0.0.191:/userfs/WEB/python"
  
