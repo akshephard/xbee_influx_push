@@ -6,15 +6,21 @@ Replace IP address with address of gateway as well.
 scp sensorlt.py python@192.0.0.103:/userfs/WEB/python
 scp -r configparser-3.5.0 python@10.0.0.191:/userfs/WEB/python
 
+**Installing script and libraries on fresh DIGI Gateway**
+ Copy the zip file from the repo to your gateway. Change IP address to the actual IP addresss of your gateway
+ "LOCAL_MACHINE $ scp xbee_influx_push.zip python@10.0.0.191:/userfs/WEB/python"
+ 
 To run the script use: python sensorlt.py
 
-**The folders contained in this repository are necessary libraries for ltsensor.py as well as a library used for developmenmt**
+**Libraries**
 
 influxdb-python/ - This is a modified version of the library that prints out the contents of the http request made by influxDBclient. This is useful for determining how to reimplement the influx API with requests library.
 
 configparser-3.5.0/ - This library is used for parsing the server.ini file
 
 requests-1.2.3/ - This is the version of requests that must be used to maintain compatibility with the xbee library
+
+libs/ - This is the library the enables connection to xbee lt sensors
 
 **Python files**
 
@@ -23,5 +29,11 @@ influxdb_test.py - This python script along with the modified version of influxd
 influx_requests.py - This python script was used to prove that a successful http request could be made with requests using the information obtained from the modified influxdb-python library.
 
 ltsensor.py - This is the python script that retrieves the temperature data from the xbee sensors attached to the gateway and sends the values to the influxdb server specified. It also writes this data to a csv file specified in the configuration file.
+
+**Other Files**
+
+server-example.ini - Example server.ini which needs to be modified with the server credentials
+
+xbee_influx_push.zip - Archive containing everything necessary to run the ltsensor.py script.
 
 ##
