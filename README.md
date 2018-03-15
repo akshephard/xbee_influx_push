@@ -1,4 +1,4 @@
-#xbee_influx_push script
+##xbee_influx_push script
 
 This repository contains all of the files used in the development of the xbee_influx_push script as well as a zip file that will run on a DIGI Gateway. In order to use this script on the Digi Gateway, follow the instructions below. 
 
